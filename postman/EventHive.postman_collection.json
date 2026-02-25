@@ -1,0 +1,105 @@
+{
+  "info": {
+    "name": "EventHive API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "EventHive API collection"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"demo@example.com\",\n  \"password\": \"StrongPass1!\",\n  \"role\": \"user\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo@example.com\",\n  \"password\": \"StrongPass1!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        { "name": "List Events", "request": { "method": "GET", "url": "{{baseUrl}}/events?page=1&limit=10" } },
+        { "name": "Get Event", "request": { "method": "GET", "url": "{{baseUrl}}/events/{{eventId}}" } },
+        {
+          "name": "Create Event (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/events",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tech Summit 2026\",\n  \"description\": \"Industry keynote and workshops\",\n  \"date\": \"2026-08-15T10:00:00.000Z\",\n  \"location\": \"San Francisco\",\n  \"totalSeats\": 120,\n  \"price\": 49.99\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Event (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/events/{{eventId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"price\": 59.99\n}" }
+          }
+        },
+        { "name": "Delete Event (Admin)", "request": { "method": "DELETE", "url": "{{baseUrl}}/events/{{eventId}}" } }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/bookings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": \"{{eventId}}\",\n  \"seatsBooked\": 2,\n  \"paymentStatus\": \"mock\"\n}"
+            }
+          }
+        },
+        { "name": "My Bookings", "request": { "method": "GET", "url": "{{baseUrl}}/bookings/me?page=1&limit=10" } },
+        { "name": "Cancel Booking", "request": { "method": "PATCH", "url": "{{baseUrl}}/bookings/{{bookingId}}/cancel" } },
+        { "name": "List All Bookings (Admin)", "request": { "method": "GET", "url": "{{baseUrl}}/bookings?page=1&limit=10" } }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        { "name": "My Profile", "request": { "method": "GET", "url": "{{baseUrl}}/users/me" } }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api/v1" },
+    { "key": "eventId", "value": "" },
+    { "key": "bookingId", "value": "" }
+  ]
+}
