@@ -8,7 +8,6 @@ Production-oriented REST API for EventHive with strict MVC + service layer archi
 - Atomic seat booking with MongoDB transactions
 - Joi validation and ObjectId checks
 - Security hardening: Helmet, CORS, rate-limit, hpp, XSS clean, mongo sanitize
-- Swagger docs at `/api-docs`
 
 ## Run
 1. Copy `.env.example` to `.env` and fill secrets.

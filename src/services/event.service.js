@@ -4,21 +4,15 @@ const Booking = require("../models/Booking");
 const ApiError = require("../utils/apiError");
 const { getPagination } = require("../utils/pagination");
 
-const createEvent = async (payload, adminId) => {
-  return Event.create({
-    ...payload,
-    availableSeats: payload.totalSeats,
-    createdBy: adminId
-  });
-};
+const buildEventFilter = (query = {}, adminId = null) => {
+  const filter = {};
 
-const listMyEvents = async (adminId, query) => {
-  const { page, limit, skip } = getPagination(query);
-  const search = query.search?.trim();
-  const filter = { createdBy: adminId };
+  if (adminId) {
+    filter.createdBy = adminId;
+  }
 
-  if (search) {
-    filter.$text = { $search: search };
+  if (query.search && query.search.trim()) {
+    filter.$text = { $search: query.search.trim() };
   }
 
   if (query.location) {
@@ -31,10 +25,26 @@ const listMyEvents = async (adminId, query) => {
     if (query.dateTo) filter.date.$lte = new Date(query.dateTo);
   }
 
-  const [items, total] = await Promise.all([
-    Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit).populate("createdBy", "name email role"),
-    Event.countDocuments(filter)
-  ]);
+  return filter;
+};
+
+const createEvent = async (payload, adminId) => {
+  return Event.create({
+    ...payload,
+    availableSeats: payload.totalSeats,
+    createdBy: adminId
+  });
+};
+
+const listMyEvents = async (adminId, query) => {
+  const { page, limit, skip } = getPagination(query);
+  const filter = buildEventFilter(query, adminId);
+  const items = await Event.find(filter)
+    .sort({ date: 1 })
+    .skip(skip)
+    .limit(limit)
+    .populate("createdBy", "name email role");
+  const total = await Event.countDocuments(filter);
 
   return {
     items,
@@ -49,27 +59,13 @@ const listMyEvents = async (adminId, query) => {
 
 const listEvents = async (query) => {
   const { page, limit, skip } = getPagination(query);
-  const search = query.search?.trim();
-  const filter = {};
-
-  if (search) {
-    filter.$text = { $search: search };
-  }
-
-  if (query.location) {
-    filter.location = { $regex: query.location, $options: "i" };
-  }
-
-  if (query.dateFrom || query.dateTo) {
-    filter.date = {};
-    if (query.dateFrom) filter.date.$gte = new Date(query.dateFrom);
-    if (query.dateTo) filter.date.$lte = new Date(query.dateTo);
-  }
-
-  const [items, total] = await Promise.all([
-    Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit).populate("createdBy", "name email role"),
-    Event.countDocuments(filter)
-  ]);
+  const filter = buildEventFilter(query);
+  const items = await Event.find(filter)
+    .sort({ date: 1 })
+    .skip(skip)
+    .limit(limit)
+    .populate("createdBy", "name email role");
+  const total = await Event.countDocuments(filter);
 
   return {
     items,

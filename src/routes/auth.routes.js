@@ -6,12 +6,6 @@ const authController = require("../controllers/auth.controller");
 
 const router = express.Router();
 
-/**
- * @swagger
- * /auth/register:
- *   post:
- *     summary: Register user
- */
 router.post("/register", validate(registerSchema), asyncHandler(authController.register));
 router.post("/login", validate(loginSchema), asyncHandler(authController.login));
 router.post("/logout", asyncHandler(authController.logout));

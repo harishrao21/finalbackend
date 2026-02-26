@@ -27,9 +27,5 @@ module.exports = {
   cookieExpiresInDays: Number(process.env.COOKIE_EXPIRES_IN_DAYS) || 1,
   clientUrls: (process.env.CLIENT_URLS || "http://localhost:5173").split(",").map((url) => url.trim()),
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-  rateLimitMax: Number(process.env.RATE_LIMIT_MAX) || 120,
-  razorpayKeyId: process.env.RAZORPAY_KEY_ID || "",
-  razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || "",
-  paymentCurrency: process.env.PAYMENT_CURRENCY || "INR",
-  mockRazorpay: String(process.env.MOCK_RAZORPAY || "false").toLowerCase() === "true"
+  rateLimitMax: Number(process.env.RATE_LIMIT_MAX) || 120
 };

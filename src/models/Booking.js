@@ -24,24 +24,8 @@ const bookingSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "mock"],
-      default: "pending"
-    },
-    paymentGateway: {
-      type: String,
-      enum: ["razorpay", "mock"],
+      enum: ["mock"],
       default: "mock"
-    },
-    gatewayOrderId: {
-      type: String
-    },
-    gatewayPaymentId: {
-      type: String,
-      unique: true,
-      sparse: true
-    },
-    gatewaySignature: {
-      type: String
     }
   },
   { timestamps: { createdAt: true, updatedAt: false } }

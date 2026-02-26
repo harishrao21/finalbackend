@@ -3,28 +3,31 @@ const User = require("../models/User");
 const ApiError = require("../utils/apiError");
 const { signAccessToken } = require("../utils/jwt");
 
-const createAuthPayload = (user) => ({
-  id: user._id,
-  name: user.name,
-  email: user.email,
-  role: user.role
-});
-
 const register = async (payload) => {
-  const { adminPasscode, ...userInput } = payload;
+  const { name, email, password, role } = payload;
   const existing = await User.findOne({ email: payload.email });
   if (existing) {
     throw new ApiError(409, "Email already registered");
   }
 
-  const hashedPassword = await bcrypt.hash(userInput.password, 12);
+  const hashedPassword = await bcrypt.hash(password, 12);
   const user = await User.create({
-    ...userInput,
+    name,
+    email,
+    role,
     password: hashedPassword
   });
 
   const token = signAccessToken({ userId: user._id, role: user.role });
-  return { user: createAuthPayload(user), token };
+  return {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    },
+    token
+  };
 };
 
 const login = async ({ email, password }) => {
@@ -39,7 +42,15 @@ const login = async ({ email, password }) => {
   }
 
   const token = signAccessToken({ userId: user._id, role: user.role });
-  return { user: createAuthPayload(user), token };
+  return {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    },
+    token
+  };
 };
 
 module.exports = { register, login };
